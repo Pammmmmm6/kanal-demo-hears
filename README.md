@@ -146,6 +146,19 @@ place ; les bulles restent dans la colonne.
 - La version française de la démo Hears n'est pas conservée ; la maquette
   d'origine en français est celle de FinCut, dans `../Maquette LP`.
 
+## Dépôt et mises en ligne
+
+Code sur GitHub : https://github.com/Pammmmmm6/kanal-demo-hears (public).
+Deux hébergements pour la même maquette :
+
+| Adresse | Mise à jour |
+|---|---|
+| https://pammmmmm6.github.io/kanal-demo-hears/ | automatique à chaque `git push` sur `main` (workflow `.github/workflows/pages.yml`) |
+| https://kanal-demo-hears.vercel.app | `npx vercel@latest deploy --prod --yes --scope erevan1` |
+
+`.gitignore` exclut `.env*`, `.vercel` et les vidéos `assets/previews` (46 Mo, héritées
+du clone FinCut et inutilisées ici).
+
 ## En ligne (Vercel)
 
 https://kanal-demo-hears.vercel.app (projet `kanal-demo-hears`, équipe Vercel « Erevan »).
