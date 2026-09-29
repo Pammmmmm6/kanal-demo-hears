@@ -1,0 +1,553 @@
+/* =========================================================
+   Jpegs Mafia — clone 1:1 (base pour KANAL)
+   Toutes les valeurs (tailles, couleurs, gaps, rayons,
+   typo) sont relevées sur https://jpegsmafia.com
+   ========================================================= */
+
+@font-face{font-family:Inter;src:url("fonts/Inter-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("fonts/Inter-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("fonts/Inter-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+
+:root{
+  --bg:#fff;
+  --text:#161616;
+  --muted:#707070;
+  --line:#ededed;
+  --bubble:#f7f7f7;
+  --blue:#011afa;         /* bulle du visiteur + boutons CTA */
+  --green:#d9fdd3;        /* vert sortant WhatsApp — dispo si on veut y revenir */
+  --link:#0099ff;         /* mentions @brand */
+  --dot:#a0a0a0;          /* points "en train d'écrire" */
+  --icon:#7e7e7e;
+
+  --col:540px;            /* largeur de la colonne */
+  --bubble-max:308px;     /* largeur max d'une bulle */
+
+  /* spring Framer : stiffness 400 / damping 30 / mass 1 (généré en JS) */
+  --spring:cubic-bezier(.22,1,.36,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,"Inter Placeholder",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:15px;
+  line-height:22.5px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+p,h1,h2{margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+/* ---------------------------------------------------------
+   Page
+   --------------------------------------------------------- */
+.page{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:40px;
+  padding:48px 0;
+  min-height:100vh;
+}
+
+/* ---------------------------------------------------------
+   Avatars
+   --------------------------------------------------------- */
+.avatar{border-radius:32px;overflow:hidden;flex:none;position:relative}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.avatar--56{width:56px;height:56px}
+.avatar--40{width:40px;height:40px}
+.avatar--28{width:28px;height:28px}
+
+/* ---------------------------------------------------------
+   Nav sticky (apparaît au scroll vers le haut)
+   --------------------------------------------------------- */
+.navbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:124px;
+  z-index:50;
+  pointer-events:none;
+  transform:translateY(-100%);
+  transition:transform .5s var(--spring);
+}
+.navbar.is-visible{transform:translateY(0)}
+.navbar__blur{
+  position:absolute;inset:0;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.navbar__inner{
+  position:relative;
+  height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;
+}
+.navbar__name{font-size:16px;line-height:24px;color:var(--text)}
+
+/* ---------------------------------------------------------
+   Profil
+   --------------------------------------------------------- */
+.profile{
+  width:var(--col);
+  max-width:calc(100vw - 32px);
+  display:flex;flex-direction:column;align-items:center;
+  gap:16px;
+}
+.profile__meta{
+  width:100%;
+  display:flex;flex-direction:column;align-items:center;
+  /* 20px dans Framer, mais le bloc bio déborde de 14px de chaque côté :
+     le rendu visuel final est de 6px — on le reproduit tel quel. */
+  gap:6px;
+}
+.profile__names{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%}
+.profile__title{
+  font-size:18px;line-height:21.6px;font-weight:400;letter-spacing:.18px;
+  color:var(--text);text-align:center;
+}
+.profile__tagline{
+  font-size:16px;line-height:24px;color:var(--muted);text-align:center;
+}
+.profile__bio{
+  width:380px;max-width:100%;
+  font-size:16px;line-height:24px;color:var(--text);text-align:center;
+}
+.profile__bio a.brand{color:var(--link)}
+
+/* mise en gras à l'intérieur des messages (**texte** dans app.js) */
+.bubble strong,.panel__text strong,.card__cap strong{font-weight:600}
+
+/* Preview vidéo au survol des mentions @brand */
+.preview{
+  position:absolute;
+  z-index:60;
+  padding:6px;
+  border-radius:10px;
+  background:rgba(243,243,243,.1);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  box-shadow:0 0 12.92px rgba(0,0,0,.02);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+.preview.is-visible{opacity:1}
+.preview__inner{width:330px;height:202px;border-radius:6px;overflow:hidden}
+.preview__inner video{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------------------------------------------------------
+   Barre de date
+   --------------------------------------------------------- */
+.datebar{
+  width:var(--col);
+  max-width:calc(100vw - 32px);
+  display:flex;align-items:center;gap:12px;
+}
+/* même séparateur réutilisé au milieu de la conversation */
+.chat .datebar{width:100%;max-width:none;margin:8px 0}
+.datebar__line{flex:1 1 0;height:1px;background:var(--line)}
+.datebar__label{
+  flex:none;text-align:center;text-transform:uppercase;white-space:nowrap;
+  font-size:12px;line-height:12px;letter-spacing:.48px;color:var(--muted);
+}
+
+/* ---------------------------------------------------------
+   Chat
+   --------------------------------------------------------- */
+.chat{
+  width:var(--col);
+  max-width:calc(100vw - 32px);
+  display:flex;flex-direction:column;gap:16px;
+}
+
+.row{display:flex;gap:16px;align-items:flex-end}
+.row__stack{
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  width:var(--bubble-max);max-width:var(--bubble-max);
+}
+/* Ligne "You" : pas d'avatar, aligné à droite, sur toute la colonne */
+.row--me .row__stack{width:100%;max-width:100%;align-items:flex-end}
+
+.label{
+  font-size:12px;line-height:14.4px;letter-spacing:.2px;color:var(--muted);
+  width:100%;
+  margin-bottom:4px;      /* 8px (gap) + 4px = 12px comme dans Framer */
+}
+.label--tight{margin-bottom:0}
+.row--me .label{text-align:right}
+
+/* Bulle texte */
+.bubble{
+  background:var(--bubble);
+  border-radius:16px 16px 16px 4px;
+  padding:6px 12px;
+  font-size:15px;line-height:22.5px;letter-spacing:.15px;
+  color:var(--text);
+  width:fit-content;
+  max-width:var(--bubble-max);
+  white-space:pre-wrap;
+  word-break:break-word;
+  overflow-wrap:break-word;
+}
+.row--me .bubble{
+  background:var(--blue);
+  color:#fff;
+  border-radius:16px 16px 4px 16px;
+}
+
+/* Carte image */
+.card{
+  background:var(--bubble);
+  border-radius:16px 16px 16px 4px;
+  padding:4px 4px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  width:var(--bubble-max);
+}
+.card__media{width:100%;border-radius:12px;overflow:hidden;line-height:0}
+.card__media img{width:100%;height:199px;object-fit:cover}
+.card--tall .card__media img{height:240px}
+/* card--auto : l'image garde ses proportions d'origine (photo pleine largeur) */
+.card--auto .card__media img{height:auto}
+/* boutons dans une carte : 292px, alignés sur ceux des panels */
+.card .btn{width:calc(100% - 8px)}
+.card__cap{
+  width:calc(100% - 16px);
+  font-size:15px;line-height:22.5px;letter-spacing:.15px;color:var(--text);
+  white-space:pre-wrap;
+}
+
+/* Panneau (bulle "large" : puces, CTA, formulaire) */
+.panel{
+  background:var(--bubble);
+  border-radius:16px 16px 16px 4px;
+  padding:8px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  width:var(--bubble-max);
+}
+.panel--tight{gap:8px}
+.panel__text{
+  width:calc(100% - 8px);   /* 284px : 292 de contenu - 4px de retrait de chaque côté */
+  font-size:15px;line-height:22.5px;letter-spacing:.15px;color:var(--text);
+  white-space:pre-wrap;
+}
+
+/* Boutons dans le chat */
+.btn{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 12px;
+  border-radius:8px;
+  background:var(--blue);
+  color:#fff;
+  font-size:15px;line-height:22.5px;font-weight:500;
+  transition:filter .2s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn--ghost{background:var(--line);color:var(--text)}
+
+/* Formulaire */
+.cform{width:100%;display:flex;flex-direction:column;gap:8px}
+.cform__field{
+  background:var(--line);
+  border-radius:10px;
+  padding:12px;
+  display:flex;align-items:center;
+}
+.cform__field--area{padding:0}
+.cform input,.cform textarea{
+  width:100%;border:0;outline:none;background:transparent;
+  font-family:inherit;font-size:14px;line-height:16.8px;color:var(--text);
+}
+.cform input{height:16px;display:block;padding:0}
+.cform textarea{height:140px;padding:12px;resize:none;display:block}
+.cform input::placeholder,.cform textarea::placeholder{color:var(--muted)}
+.cform__submit{
+  width:100%;height:40px;
+  border-radius:10px;background:var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;line-height:22.5px;font-weight:500;color:var(--text);
+  transition:background .2s ease;
+}
+.cform__submit:hover{background:#e4e4e4}
+
+/* Indicateur "en train d'écrire" */
+.typing{
+  background:var(--bubble);
+  border-radius:16px 16px 16px 4px;
+  padding:12px;
+  display:flex;align-items:center;gap:4px;
+  width:56px;height:32px;
+}
+.typing i{
+  width:8px;height:8px;border-radius:16px;background:var(--dot);
+  display:block;
+  animation:dots 900ms linear infinite;
+}
+.typing i:nth-child(1){animation-delay:0ms}
+.typing i:nth-child(2){animation-delay:-300ms}
+.typing i:nth-child(3){animation-delay:-600ms}
+@keyframes dots{
+  0%,32.9%   {opacity:1}
+  33.3%,65.9%{opacity:.2}
+  66.3%,100% {opacity:.5}
+}
+
+/* ---------------------------------------------------------
+   Animation d'apparition (spring Framer)
+   --------------------------------------------------------- */
+.enter{animation:springL .52s var(--spring) both, fadeIn .26s ease-out both}
+.row--me .enter,.enter--right{animation:springR .52s var(--spring) both, fadeIn .26s ease-out both}
+/* séparateur : simple fondu, pas de glissement latéral */
+.enter--fade{animation:fadeIn .45s ease-out both}
+@keyframes springL{from{transform:translateX(-8px)}to{transform:translateX(0)}}
+@keyframes springR{from{transform:translateX(8px)} to{transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  .enter,.enter--fade{animation:fadeIn .01s both}
+  .typing i{animation:none;opacity:.5}
+}
+
+/* ---------------------------------------------------------
+   Footer
+   --------------------------------------------------------- */
+.pagefoot{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+.totop{
+  width:32px;height:32px;border-radius:100px;background:var(--line);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s ease;
+}
+.totop:hover{background:#e4e4e4}
+
+/* ---------------------------------------------------------
+   Mobile — les bulles suivent la largeur d'écran (max 308px)
+   --------------------------------------------------------- */
+@media (max-width:768px){
+  :root{--bubble-max:min(calc(100vw - 76px),308px)}   /* 32 marges + 28 avatar + 16 écart */
+  .page{padding:32px 0;gap:32px}
+  .profile__bio{width:100%}
+  .preview{display:none}
+}
+
+/* ---------------------------------------------------------
+   Thème WhatsApp (clair)
+   Fond à motifs de WhatsApp, bulles de la marque en blanc,
+   bulles de la cliente en vert, couleurs de l'app :
+   fond #e5ddd4 (relevé sur l'image), entrant #ffffff,
+   sortant #d9fdd3, texte #111b21, ombre de bulle WhatsApp.
+   --------------------------------------------------------- */
+:root{
+  --wa-bg:#e5ddd4;
+  --wa-in:#ffffff;
+  --wa-out:#d9fdd3;
+  --wa-text:#111b21;
+  --wa-shadow:0 1px .5px rgba(11,20,26,.13);
+  --wa-green:#008069;     /* vert WhatsApp foncé : lisible en blanc dessus */
+}
+body{
+  background-color:var(--wa-bg);
+  background-image:url("whatsapp-bg.webp");   /* motif raccordable, 760 px à densité 2 */
+  background-size:380px auto;
+  background-repeat:repeat;
+  background-attachment:fixed;                 /* le fond reste fixe, comme dans l'app */
+}
+.bubble,.card,.panel,.typing{background:var(--wa-in);box-shadow:var(--wa-shadow)}
+.bubble,.card__cap,.panel__text{color:var(--wa-text)}
+.row--me .bubble{background:var(--wa-out);color:var(--wa-text)}
+/* les traits des séparateurs restaient plus clairs que le nouveau fond */
+.datebar__line{background:rgba(11,20,26,.12)}
+
+/* plus de bleu : les actions passent au vert WhatsApp */
+.btn:not(.btn--ghost){background:var(--wa-green)}   /* les boutons secondaires restent gris */
+.profile__bio a.brand{color:var(--wa-green)}
+
+/* infos de la marque sur une carte blanche : illisibles directement sur le motif */
+.profile{
+  background:var(--wa-in);
+  border-radius:16px;
+  padding:24px 24px 18px;
+  box-shadow:var(--wa-shadow);
+}
+
+.profile{padding-bottom:24px}
+
+/* WhatsApp en chiffres, sous la bio : deux chiffres séparés d'un filet,
+   puis une phrase discrète */
+.profile__stats{
+  width:100%;display:grid;grid-template-columns:1fr 1fr;
+  padding-top:16px;border-top:1px solid rgba(11,20,26,.08);
+}
+.stat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 8px;text-align:center}
+.stat + .stat{border-left:1px solid rgba(11,20,26,.08)}
+.stat__value{font-size:20px;line-height:24px;font-weight:600;letter-spacing:-.2px;color:var(--wa-green,#008069)}
+.stat__label{font-size:12px;line-height:16px;color:var(--muted)}
+.profile__note{margin-top:-4px;font-size:12px;line-height:16px;color:var(--muted);text-align:center}
+
+/* carte « contacter KANAL » : même carte que le profil Hears, avec deux boutons */
+.contact__actions{width:100%;display:flex;flex-direction:column;gap:8px}
+.contact__actions .btn svg{width:18px;height:18px;fill:currentColor}
+
+/* colonnes : invisibles sous 1280 px (les cartes s'empilent comme avant) */
+.rail,.stage{display:contents}
+
+/* ---------------------------------------------------------
+   Écran large : trois colonnes. Profil + lecteur à gauche,
+   conversation au centre (même largeur, centrée dans l'écran),
+   contact KANAL à droite. Les deux colonnes latérales sont fixées
+   à l'écran (position: fixed) : elles ne bougent jamais, seule la
+   conversation défile au milieu.
+   --------------------------------------------------------- */
+@media (min-width:1280px){
+  .page{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) var(--col) minmax(0,1fr);
+    column-gap:32px;row-gap:40px;align-items:start;
+    padding:48px 24px;
+  }
+  .rail{
+    display:flex;flex-direction:column;gap:12px;
+    /* 340 px max, et jamais plus que la place entre le bord (24 px) et la colonne centrale */
+    width:min(340px, calc(50% - var(--col) / 2 - 32px - 24px));
+    position:fixed;top:48px;z-index:40;             /* 48 px = même hauteur que le haut de la conversation */
+  }
+  /* collées à la colonne centrale avec le même écart de 32 px de chaque côté */
+  .rail--left{right:calc(50% + var(--col) / 2 + 32px)}
+  .rail--right{left:calc(50% + var(--col) / 2 + 32px)}
+  .stage{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:40px}
+  .pagefoot{grid-column:2;grid-row:2}
+  .rail .profile,.rail .player{width:100%;max-width:none}
+  .rail .profile{padding-left:20px;padding-right:20px}
+  .rail .stat{padding:0 4px}                       /* libellés des chiffres sur une ligne dès 1280 px */
+  .rail .player{position:relative;top:auto;margin-top:0}   /* c'est toute la colonne qui est fixe */
+}
+/* écran large mais peu haut : les colonnes reprennent leur place dans la grille
+   et défilent avec la page, pour ne rien couper en bas */
+@media (min-width:1280px) and (max-height:659px){
+  .rail{position:relative;top:auto;left:auto;right:auto;width:100%;max-width:340px}
+  .rail--left{grid-column:1;grid-row:1;justify-self:end}
+  .rail--right{grid-column:3;grid-row:1;justify-self:start}
+}
+
+/* commande issue d'une campagne : séparateur standard, logo Shopify devant le texte */
+.datebar__label--order{display:inline-flex;align-items:center;gap:6px}
+/* logo dans un petit cercle blanc : le fichier a un fond blanc carré ; avec 3 px de
+   marge, le carré (14 px) tient entier dans le cercle (20 px) et se fond dans le blanc */
+.datebar__logo{width:20px;height:20px;padding:3px;flex:none;object-fit:contain;border-radius:50%;background:#fff;box-shadow:var(--wa-shadow)}
+
+/* ---------------------------------------------------------
+   Petits écrans : les rangées de liens restent dans la carte,
+   sans « · » orphelin en fin de ligne ; les séparateurs longs
+   passent à la ligne au lieu de déborder
+   --------------------------------------------------------- */
+.chat .datebar__label{flex:0 1 auto;white-space:normal;line-height:16px}
+
+/* ---------------------------------------------------------
+   Lecteur façon YouTube, collé en haut pendant que la conversation
+   défile : démo en cours à gauche, pause/lecture et suivant à droite,
+   progression de la démo en cours dessous, en retrait des bords
+   --------------------------------------------------------- */
+.player{
+  position:sticky;top:12px;z-index:40;
+  width:var(--col);max-width:calc(100vw - 32px);
+  margin-top:-28px;                               /* 12 px sous la carte profil (écart de page : 40 px) */
+  padding:12px 16px 14px;
+  background:var(--wa-in,#fff);border-radius:14px;
+  box-shadow:0 2px 10px rgba(11,20,26,.07), var(--wa-shadow);   /* se détache des messages qui passent dessous */
+}
+.player__row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.player__info{min-width:0;display:flex;flex-direction:column;gap:2px}
+.player__group{font-size:10px;line-height:12px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.player__title{font-size:14px;line-height:18px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player__controls{display:flex;align-items:center;gap:2px;flex:none;margin-right:-8px}   /* icône alignée sur la fin de la barre */
+.player__btn{
+  width:30px;height:30px;border-radius:50%;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text);transition:background .15s ease;
+}
+.player__btn svg{width:14px;height:14px;fill:currentColor}
+.player__btn:hover{background:rgba(11,20,26,.06)}
+.player__btn:focus-visible{outline:1.5px solid var(--wa-green,#008069);outline-offset:1px}
+.player__btn--main{background:rgba(11,20,26,.05)}
+.player__btn--main:hover{background:rgba(11,20,26,.09)}
+.player__btn .icon-play{display:none}
+.player__btn.is-paused .icon-play{display:block}
+.player__btn.is-paused .icon-pause{display:none}
+
+/* progression : fine, arrondie, en retrait des bords de la carte (16 px, 14 px sur mobile) */
+.player__bar{height:3px;margin-top:10px;border-radius:999px;background:rgba(11,20,26,.08);overflow:hidden}
+.player__fill{display:block;height:100%;width:0;border-radius:inherit;background:var(--wa-green,#008069)}
+
+/* liste de toutes les démos sous la barre : jouées (coche), en cours (petit
+   égaliseur vert), à venir (numéro) ; chaque ligne lance sa démo */
+.playlist{
+  list-style:none;margin:12px 0 0;padding:8px 0 0;
+  border-top:1px solid rgba(11,20,26,.08);
+  display:flex;flex-direction:column;gap:1px;
+  position:relative;
+}
+.playlist li{display:block}
+.playlist__item{
+  width:calc(100% + 16px);margin:0 -8px;padding:6px 8px;border-radius:8px;
+  display:flex;align-items:center;gap:10px;text-align:left;
+  transition:background .15s ease;
+}
+.playlist__item:hover{background:rgba(11,20,26,.045)}
+.playlist__item:focus-visible{outline:1.5px solid var(--wa-green,#008069);outline-offset:-1.5px}
+.playlist__state{width:16px;height:16px;flex:none;display:flex;align-items:center;justify-content:center}
+.playlist__num{font-size:11px;line-height:16px;color:var(--muted);font-variant-numeric:tabular-nums}
+.playlist__check,.playlist__eq{display:none}
+.playlist__check svg{width:14px;height:14px;fill:none;stroke:var(--wa-green,#008069);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.playlist__name{flex:1;min-width:0;font-size:13px;line-height:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.playlist__group{flex:none;font-size:11px;line-height:16px;color:var(--muted)}
+.playlist__item.is-done .playlist__num,.playlist__item.is-current .playlist__num{display:none}
+.playlist__item.is-done .playlist__check{display:flex}
+.playlist__item.is-done .playlist__name{color:var(--muted)}
+.playlist__item.is-current{background:rgba(0,128,105,.07)}
+.playlist__item.is-current .playlist__name{font-weight:500;color:var(--wa-green,#008069)}
+.playlist__item.is-current .playlist__eq{display:flex;align-items:flex-end;gap:2px;height:11px}
+.playlist__eq i{display:block;width:2.5px;height:100%;border-radius:1px;background:var(--wa-green,#008069);transform-origin:bottom;animation:eq 1s ease-in-out infinite}
+.playlist__eq i:nth-child(2){animation-delay:-.35s}
+.playlist__eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.is-paused .playlist__eq i{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.playlist__eq i{animation:none;transform:scaleY(.7)}}
+
+/* écrans étroits (lecteur collé en haut) : la liste devient une rangée de
+   pastilles qui défile horizontalement, pour garder le lecteur compact */
+@media (max-width:1279px){
+  .player{overflow:hidden}
+  .playlist{
+    flex-direction:row;gap:6px;overflow-x:auto;
+    margin:10px -16px 0;padding:0 16px;border-top:0;
+    scrollbar-width:none;
+  }
+  .playlist::-webkit-scrollbar{display:none}
+  .playlist__item{width:auto;margin:0;padding:4px 10px 4px 8px;border-radius:999px;gap:6px;background:rgba(11,20,26,.05)}
+  .playlist__item:hover{background:rgba(11,20,26,.08)}
+  .playlist__name{flex:none;font-size:12px;line-height:16px}
+  .playlist__group{display:none}
+  .playlist__state{width:12px;height:12px}
+  .playlist__check svg{width:12px;height:12px}
+  .playlist__item.is-current .playlist__eq{height:9px}
+}
+@media (max-width:447px){
+  .playlist{margin-left:-14px;margin-right:-14px;padding:0 14px}
+}
+
+/* en pause : les trois points « en train d'écrire » s'arrêtent aussi */
+.is-paused .typing i{animation-play-state:paused}
+
+@media (max-width:768px){
+  .player{margin-top:-20px}                       /* écart de page : 32 px sur mobile */
+}
+@media (max-width:447px){
+  .player{top:8px;padding:10px 14px 12px}
+}

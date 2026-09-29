@@ -1,0 +1,6 @@
+.DS_Store
+.env
+.env.*
+.vercel
+# vidéos de preview héritées du clone FinCut, non utilisées par la démo Hears (46 Mo)
+assets/previews/

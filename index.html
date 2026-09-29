@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>KANAL · Hears · WhatsApp automation demo</title>
+<meta name="description" content="KANAL WhatsApp automation demo for Hears: abandoned cart, order confirmation and AI agent automations, plus Black Friday, Hears × Pacha and Hears Sleep launch campaigns.">
+<link rel="icon" href="assets/favicon-kanal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+
+<div class="page">
+
+  <!-- ============ Colonne de gauche (écran large) : profil + lecteur.
+       Sous 1280 px, les colonnes s'effacent (display: contents) et tout
+       s'empile comme avant. ============ -->
+  <div class="rail rail--left">
+
+  <!-- ============ Profile ============ -->
+  <section class="profile">
+    <div class="avatar avatar--56"><img src="assets/avatar-hears.png" alt="Hears"></div>
+
+    <div class="profile__meta">
+      <div class="profile__names">
+        <h1 class="profile__title">Hears</h1>
+      </div>
+
+      <p class="profile__bio">Award-winning earplugs that protect your ears without changing what you hear. Over 500,000 customers.</p>
+    </div>
+
+    <!-- WhatsApp en chiffres : pourquoi ce canal (lu, et tous les jours) -->
+    <div class="profile__stats" role="group" aria-label="WhatsApp in numbers">
+      <div class="stat">
+        <p class="stat__value">3B+</p>
+        <p class="stat__label">people use WhatsApp</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">87%</p>
+        <p class="stat__label">open it every day</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Demo player (YouTube-style), stuck to the top while the
+       conversation scrolls: current demo on the left, play/pause and next on
+       the right, progress of the current demo underneath (back to zero on
+       every new demo). app.js fills the title and the bar. ============ -->
+  <section class="player" id="player" aria-label="Demo player">
+    <div class="player__row">
+      <div class="player__info" aria-live="polite">
+        <p class="player__group" id="player-group">Automation</p>
+        <p class="player__title" id="player-title">Abandoned cart</p>
+      </div>
+      <div class="player__controls">
+        <button class="player__btn player__btn--main" id="player-toggle" type="button" aria-label="Pause">
+          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.4" height="14" rx="1.2"></rect><rect x="14.1" y="5" width="3.4" height="14" rx="1.2"></rect></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.9v12.2a1.1 1.1 0 0 0 1.7.93l9.6-6.1a1.1 1.1 0 0 0 0-1.86L9.7 4.97A1.1 1.1 0 0 0 8 5.9Z"></path></svg>
+        </button>
+        <button class="player__btn" id="player-next" type="button" aria-label="Next demo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.4v11.2a1.1 1.1 0 0 0 1.73.9l8-5.6a1.1 1.1 0 0 0 0-1.8l-8-5.6A1.1 1.1 0 0 0 5 6.4Z"></path><rect x="16.4" y="5.5" width="2.6" height="13" rx="1.1"></rect></svg>
+        </button>
+      </div>
+    </div>
+    <div class="player__bar" id="player-bar" aria-hidden="true">
+      <span class="player__fill" id="player-fill"></span>
+    </div>
+
+    <!-- every demo in play order: done, playing, up next; click to jump (built by app.js) -->
+    <ol class="playlist" id="playlist" aria-label="All demos"></ol>
+  </section>
+
+  </div>
+
+  <!-- ============ Colonne centrale : la conversation, même largeur ============ -->
+  <div class="stage">
+
+  <!-- ============ Trigger event (label set by app.js) ============ -->
+  <div class="datebar">
+    <span class="datebar__line"></span>
+    <p class="datebar__label" id="trigger-label">Abandoned cart</p>
+    <span class="datebar__line"></span>
+  </div>
+
+  <!-- ============ Chat ============ -->
+  <main class="chat" id="chat"></main>
+
+  </div>
+
+  <!-- ============ Colonne de droite : contacter KANAL (après la conversation sur mobile) ============ -->
+  <div class="rail rail--right">
+    <section class="profile contact" aria-labelledby="contact-title">
+      <div class="avatar avatar--56"><img src="assets/avatar-kanal.png" alt="KANAL"></div>
+
+      <div class="profile__meta">
+        <div class="profile__names">
+          <h2 class="profile__title" id="contact-title">KANAL</h2>
+        </div>
+
+        <p class="profile__bio">Want these WhatsApp automations and campaigns on your store? Book a call and our team sets everything up with you.</p>
+      </div>
+
+      <div class="profile__stats" role="group" aria-label="KANAL in numbers">
+        <div class="stat">
+          <p class="stat__value">500+</p>
+          <p class="stat__label">Shopify brands</p>
+        </div>
+        <div class="stat">
+          <p class="stat__value">5.0/5</p>
+          <p class="stat__label">Shopify App Store</p>
+        </div>
+      </div>
+
+      <div class="contact__actions">
+        <a class="btn" href="https://cal.com/team/kanal/demo" target="_blank" rel="noopener">
+          <svg aria-hidden="true"><use href="#ico-calendar"></use></svg>
+          Book a call
+        </a>
+        <a class="btn btn--ghost" href="https://getkanal.com" target="_blank" rel="noopener">Discover KANAL</a>
+      </div>
+      <p class="profile__note">Official WhatsApp API, built for Shopify.</p>
+    </section>
+  </div>
+
+  <!-- ============ Back to top ============ -->
+  <div class="pagefoot">
+    <button class="totop" id="totop" aria-label="Back to top">
+      <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M 4.5 8.917 L 9.917 3.5 M 9.917 3.5 L 15.333 8.917 M 9.917 3.5 L 9.917 16.5" fill="transparent" stroke-width="1.5" stroke="#7e7e7e" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+  </div>
+
+</div>
+
+<!-- hover preview card for brand mentions -->
+<div class="preview" id="preview" aria-hidden="true">
+  <div class="preview__inner"><video id="preview-video" loop muted playsinline preload="auto"></video></div>
+</div>
+
+<!-- ============ SVG icon defs ============ -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-calendar" viewBox="0 0 20 20"><path d="M 5.75 2 C 5.949 2 6.14 2.079 6.28 2.22 C 6.421 2.36 6.5 2.551 6.5 2.75 L 6.5 4 L 13.5 4 L 13.5 2.75 C 13.5 2.551 13.579 2.36 13.72 2.22 C 13.86 2.079 14.051 2 14.25 2 C 14.449 2 14.64 2.079 14.78 2.22 C 14.921 2.36 15 2.551 15 2.75 L 15 4 L 15.25 4 C 15.979 4 16.679 4.29 17.195 4.805 C 17.71 5.321 18 6.021 18 6.75 L 18 15.25 C 18 15.979 17.71 16.679 17.195 17.195 C 16.679 17.71 15.979 18 15.25 18 L 4.75 18 C 4.021 18 3.321 17.71 2.805 17.195 C 2.29 16.679 2 15.979 2 15.25 L 2 6.75 C 2 6.021 2.29 5.321 2.805 4.805 C 3.321 4.29 4.021 4 4.75 4 L 5 4 L 5 2.75 C 5 2.551 5.079 2.36 5.22 2.22 C 5.36 2.079 5.551 2 5.75 2 Z M 4.75 7.5 C 4.06 7.5 3.5 8.06 3.5 8.75 L 3.5 15.25 C 3.5 15.94 4.06 16.5 4.75 16.5 L 15.25 16.5 C 15.94 16.5 16.5 15.94 16.5 15.25 L 16.5 8.75 C 16.5 8.06 15.94 7.5 15.25 7.5 Z" fill="currentColor"></path></symbol>
+  <symbol id="ico-restart" viewBox="0 0 20 20"><path d="M 15.312 11.425 C 15.062 12.357 14.571 13.207 13.888 13.89 C 13.206 14.573 12.356 15.064 11.423 15.313 C 10.491 15.563 9.509 15.563 8.576 15.314 C 7.644 15.064 6.794 14.573 6.111 13.891 L 5.799 13.58 L 8.232 13.58 C 8.431 13.58 8.621 13.501 8.762 13.36 C 8.903 13.219 8.982 13.029 8.982 12.83 C 8.982 12.631 8.903 12.44 8.762 12.299 C 8.621 12.159 8.431 12.08 8.232 12.08 L 3.989 12.08 C 3.79 12.08 3.599 12.159 3.458 12.299 C 3.318 12.44 3.239 12.631 3.239 12.83 L 3.239 17.072 C 3.239 17.271 3.318 17.461 3.458 17.602 C 3.599 17.743 3.79 17.822 3.989 17.822 C 4.188 17.822 4.378 17.743 4.519 17.602 C 4.66 17.461 4.739 17.271 4.739 17.072 L 4.739 14.642 L 5.049 14.952 C 5.918 15.821 7 16.446 8.187 16.764 C 9.374 17.082 10.624 17.082 11.811 16.764 C 12.998 16.446 14.08 15.821 14.949 14.952 C 15.818 14.083 16.443 13.001 16.761 11.814 C 16.813 11.621 16.786 11.417 16.687 11.244 C 16.587 11.072 16.423 10.946 16.231 10.894 C 16.039 10.842 15.834 10.869 15.662 10.968 C 15.489 11.068 15.364 11.232 15.312 11.425 Z M 16.542 7.702 C 16.682 7.561 16.761 7.37 16.761 7.172 L 16.761 2.93 C 16.761 2.731 16.682 2.54 16.541 2.399 C 16.401 2.259 16.21 2.18 16.011 2.18 C 15.812 2.18 15.621 2.259 15.48 2.399 C 15.34 2.54 15.261 2.731 15.261 2.93 L 15.261 5.361 L 14.951 5.051 C 14.082 4.182 13 3.557 11.813 3.238 C 10.626 2.92 9.376 2.92 8.189 3.238 C 7.002 3.556 5.919 4.181 5.051 5.05 C 4.182 5.919 3.557 7.002 3.239 8.189 C 3.21 8.285 3.201 8.386 3.211 8.486 C 3.222 8.585 3.253 8.682 3.302 8.77 C 3.351 8.857 3.417 8.934 3.496 8.996 C 3.575 9.058 3.666 9.103 3.762 9.129 C 3.859 9.155 3.961 9.161 4.06 9.148 C 4.159 9.134 4.255 9.1 4.341 9.049 C 4.427 8.997 4.502 8.929 4.562 8.848 C 4.621 8.767 4.664 8.675 4.687 8.578 C 4.936 7.645 5.427 6.794 6.11 6.111 C 6.793 5.428 7.643 4.937 8.576 4.687 C 9.509 4.437 10.491 4.437 11.424 4.686 C 12.357 4.936 13.207 5.428 13.89 6.111 L 14.201 6.421 L 11.769 6.421 C 11.57 6.421 11.379 6.5 11.238 6.64 C 11.098 6.781 11.019 6.972 11.019 7.171 C 11.019 7.37 11.098 7.56 11.238 7.701 C 11.379 7.842 11.57 7.921 11.769 7.921 L 16.012 7.921 C 16.21 7.921 16.401 7.842 16.542 7.702 Z" fill="currentColor"></path></symbol>
+</svg>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

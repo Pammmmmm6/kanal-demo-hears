@@ -1,0 +1,21 @@
+# fichiers locaux et assets non utilisés par la démo Hears (pas mis en ligne)
+.claude
+README.md
+.DS_Store
+assets/unused
+assets/previews
+assets/avatar-difaino.png
+assets/avatar-javi.png
+assets/avatar-sam.png
+assets/favicon.png
+assets/gallery-1.png
+assets/gallery-2.png
+assets/gallery-3.png
+assets/monthly-output.png
+
+# secrets et fichiers de lien Vercel, jamais en ligne
+.env
+.env.*
+.gitignore
+.vercel
+.vercelignore
