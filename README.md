@@ -146,6 +146,31 @@ place ; les bulles restent dans la colonne.
 - La version française de la démo Hears n'est pas conservée ; la maquette
   d'origine en français est celle de FinCut, dans `../Maquette LP`.
 
+## Landing page Kanal (`landing/`)
+
+Page d'accueil complète de Kanal, accessible à `/landing/` (en local :
+http://localhost:4322/landing/). Elle reprend le déroulé et le style d'une
+landing SaaS éditoriale comme celle de gleap.ai : fond crème, encre noire,
+cartes blanches arrondies, tuiles pastel et grandes maquettes produit. Tous les
+textes et toutes les maquettes sont écrits pour Kanal. Aucun texte, logo ni
+image de Gleap n'est repris.
+
+Ordre des sections : bandeau « Kanal MCP », navigation avec menus déroulants,
+hero, bandeau de marques clientes, « Four flows » (les quatre modules numérotés
+No. 01 à 04), maquette de l'inbox Kanal, quatre blocs fonctionnalités en
+alternance (relance de panier, campagnes, agent IA, après-achat), résultats et
+témoignages, intégrations, tarifs (Pro, Scale, Business, avec Agency en note),
+FAQ, CTA final, pied de page.
+
+Sources : chiffres, témoignages, tarifs, intégrations et liens relevés sur
+getkanal.com et getkanal.com/pricing le 2026-10-13. Sont **illustratifs** : la
+boutique « Maison Lumen », Marie, les montants et statistiques des maquettes
+(€24,610, 287 paniers, tableau des campagnes, commande #1042…).
+
+Fichiers : `landing/index.html` (page, icônes SVG, logo Kanal en symbole) et
+`landing/landing.css` (design system). Les polices Inter viennent de
+`assets/fonts`.
+
 ## Dépôt et mises en ligne
 
 Code sur GitHub : https://github.com/Pammmmmm6/kanal-demo-hears (public).
