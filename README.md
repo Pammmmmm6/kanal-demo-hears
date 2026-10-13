@@ -168,8 +168,10 @@ boutique « Maison Lumen », Marie, les montants et statistiques des maquettes
 (€24,610, 287 paniers, tableau des campagnes, commande #1042…).
 
 Fichiers : `landing/index.html` (page, icônes SVG, logo Kanal en symbole) et
-`landing/landing.css` (design system). Les polices Inter viennent de
-`assets/fonts`.
+`landing/landing.css` (design system). Police Switzer (Fontshare, licence ITF
+Free Font License) dans `landing/fonts`, titres en graisse 400, échelle
+typographique 16 px × 1,19ⁿ, fond `#f6f6f3`, texte `#353535`, accroche sur
+fond `#191919`, boutons en pilule, rayons de 12 px.
 
 ## Dépôt et mises en ligne
 
